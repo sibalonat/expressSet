@@ -1,22 +1,37 @@
-const GoogleStrategy = require('passport-google-oauth20').Strategy
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
-const moongose = require('mongoose')
+const keys = require("../config/keys");
 
-const User = require('user')
-const passport = require('passport')
+const moongose = require("mongoose");
+
+const User = require("user");
+const passport = require("passport");
 
 passport.serializeUser((user, done) => {
-    done(null, user.id)
-})
+  done(null, user.id);
+});
 
 passport.deserializeUser((id, done) => {
-    User.findById(id).then(user => {
-        done(null, user)
-    })
-})
+  User.findById(id).then((user) => {
+    done(null, user);
+  });
+});
 
-
-
-
-
-
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: keys.googleClientId,
+      clientSecret: keys.googleClientSecret,
+      callbackURL: "/auth/google/callback",
+      proxy: true,
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      const existingUser = await User.findByOne({ googleId: profile.id });
+      if (existingUser) {
+        return done(null, existingUser);
+      }
+      const user = await new User({ googleId: profile.id }).save();
+      done(null, user)
+    }
+  )
+);
