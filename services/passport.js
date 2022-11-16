@@ -4,8 +4,9 @@ const keys = require("../config/keys");
 
 const moongose = require("mongoose");
 
-const User = require("user");
+const User = moongose.model("user");
 const passport = require("passport");
+// const mongoose = require("mongoose");
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -26,7 +27,8 @@ passport.use(
       proxy: true,
     },
     async (accessToken, refreshToken, profile, done) => {
-      const existingUser = await User.findByOne({ googleId: profile.id });
+        // find
+      const existingUser = await User.findOne({ googleId: profile.id });
       if (existingUser) {
         return done(null, existingUser);
       }

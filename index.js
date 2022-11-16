@@ -6,7 +6,7 @@ require('./models/User')
 
 
 const passport = require('passport')
-// require('./services/passport')
+require('./services/passport')
 
 
 // mongoose.connect('mongodb://user:pass@localhost:port/database')
@@ -24,5 +24,5 @@ app.use(passport.initialize())
 require('./routes/authRoutes')(app)
 
 
-const port = 5000
+const port = 5500
 app.listen(port)
