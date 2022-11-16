@@ -16,8 +16,6 @@ mongoose.connect('mongodb+srv://root:marini12345@usersauthenticatewithgo.3kdehte
 
 
 
-
-
 const app = express()
 app.use(passport.initialize())
 
