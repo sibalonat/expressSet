@@ -25,7 +25,7 @@ module.exports = app => {
         '/api/current_user', 
         (req, res) => {
 
-            console.log(res.user);
+            // console.log(res.user);
             res.send(res.user)
     })
 }
