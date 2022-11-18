@@ -1,4 +1,6 @@
 const passport = require('passport')
+const upload = require('../middleware/upload')
+
 
 module.exports = app => {
     app.get('/', (req, res) => {
@@ -24,4 +26,8 @@ module.exports = app => {
         (req, res) => {
             res.send(req.user.email);
     })
+
+    app.post('/upload', upload.single('file'), (req, res) => {
+        res.redirect('/');
+      });
 }
