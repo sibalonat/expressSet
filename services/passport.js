@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer');
 const moongose = require("mongoose");
 
 const User = moongose.model("user");
+const userCar = moongose.model("userCar");
 const passport = require("passport");
 // const mongoose = require("mongoose");
 
@@ -40,18 +41,29 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
         // find
-
-        // console.log(profile._json.email);
-
+      
       const existingUser = await User.findOne({ googleId: profile.id, email: profile._json.email });
       if (existingUser) {
+        transporter.sendMail({
+          to: profile._json.email,
+          subject: 'Verify Account',
+          html: `
+            <div style="display: block; width: 100%; height: 10vh;">
+              <h1>${profile._json.name}</h1>
+              <img src="${profile._json.picture}">
+            </div>
+          `
+        })
         return done(null, existingUser);
       }
-      const user = await new User({ googleId: profile.id, email: profile._json.email }).save();
+      const whatAreYouDriving = 'benz'
+      const car = await new userCar({whatAreYouDriving: whatAreYouDriving}).save()
+
+      const user = await new User({ googleId: profile.id, email: profile._json.email, userCar:  car }).save();
       transporter.sendMail({
         to: profile._json.email,
         subject: 'Verify Account',
-        html: `are you here`
+        html: `<h1>${user.userCar.whatAreYouDriving}</h1>`
       })
       done(null, user)
     }
